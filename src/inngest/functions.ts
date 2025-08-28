@@ -2,13 +2,21 @@ import { inngest } from "./client";
 
 
 import {Sandbox} from "@e2b/code-interpreter";
-import { Agent, openai, createAgent, createTool ,createNetwork } from "@inngest/agent-kit";
+import { Agent, openai, createAgent, createTool ,createNetwork, Tool } from "@inngest/agent-kit";
 import { getSandbox, lastAssistantTextMessageContent } from "./utils";
 import {z,ZodType}from "zod";
 import { PROMPT } from "@/prompt";
-export const helloWorld = inngest.createFunction(
-  { id: "hello-world" },
-  { event: "test/hello.world" },
+import { prisma } from "@/lib/db";
+
+
+
+interface AgentState{
+    summary:string;
+    files:{[path:string]:string};
+}
+export const codeAgentFunction = inngest.createFunction(
+  { id: "code-agent" },
+  { event: "code-agent/run" },
   async ({ event, step }) => {
 
 
@@ -29,7 +37,7 @@ export const helloWorld = inngest.createFunction(
 
     //we now need a way to invoke this summarize agent using event data value 
 
-      const codeAgent = createAgent({
+      const codeAgent = createAgent<AgentState>({
       name: "code-agent",
       description:"An expert coding agent",
       system:PROMPT,
@@ -87,7 +95,7 @@ export const helloWorld = inngest.createFunction(
             }),
             handler:async(
                 {files},
-                {step,network}
+                {step,network}:Tool.Options<AgentState>
             )=>{
                 const newFiles=await step?.run("createOrUpdateFiles",async()=>{
                     try{
@@ -170,7 +178,7 @@ export const helloWorld = inngest.createFunction(
 
     //creating network of agents 
 
-    const network =createNetwork({
+    const network =createNetwork<AgentState>({
         name:"coding-agent-network",
         agents:[codeAgent],
         maxIter:15,
@@ -198,6 +206,10 @@ export const helloWorld = inngest.createFunction(
     const result=await network.run(event.data.value);
 
 
+    const isError=!result.state.data.summary||Object.keys(result.state.data.files||{}).length ===0;
+
+
+
 
     // const {output}=await summarizer.run(
     //     `Write the following snippet: ${event.data.value}`,
@@ -212,6 +224,40 @@ export const helloWorld = inngest.createFunction(
 
         return `https://${host}`;
 
+    });
+
+
+    //adding one more step here in inngest 
+
+    await step.run("save-result",async()=>{
+        if(isError){
+            return await prisma.message.create({
+                data:{
+                    // projectId:event.data.projectId,
+                    content:"Something went wrong .Please try again",
+                    role:"ASSISTANT",
+                    type:"ERROR",
+                },
+            })
+        }
+
+        return await prisma.message.create({
+            data:{
+                // projectId:event.data.projectId,
+                // content:parseAgentOutput(responseOutput),
+                content:result.state.data.summary,
+                role:"ASSISTANT",
+                type:"RESULT",
+                fragment:{
+                    create:{
+                        sandboxUrl:sandboxUrl,
+                        title:"Fragment",
+                        // title:parseAgentOutput(fragmentTitleOutput),
+                        files:result.state.data.files,
+                    }
+                }
+            }
+        })
     })
 
     
