@@ -11,6 +11,8 @@ import {  createTRPCRouter, baseProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
 
+import {generateSlug} from "random-word-slugs";
+
 //in our project protectedprocedure is a wrapper that ensures 
 //the user is authenticated 
 //input output is validated 
@@ -25,7 +27,7 @@ import z from "zod";
 
 
 
-export const messagesRouter=createTRPCRouter({
+export const projectsRouter=createTRPCRouter({
 
 
     //this getmany procedure is used and called from frontend to display conversion history for a project
@@ -39,21 +41,19 @@ export const messagesRouter=createTRPCRouter({
 
     // )
     .query(async({input,ctx})=>{
-        const messages=await prisma.message.findMany({
+        const projects=await prisma.project.findMany({
             // where:{
             //     projectId:input.projectId,
             //     project:{
             //         userId:ctx.auth.userId,
             //     },
             // },
-            include:{
-                fragment:true,
-            },
+            
             orderBy:{
                 updatedAt:"asc",
             },
         });
-        return messages;
+        return projects;
     }),
 
     //Used and called from frontend  when a user sends a new message/query
@@ -63,9 +63,10 @@ export const messagesRouter=createTRPCRouter({
     .input(
         z.object({
             value:z.string()
-                .min(1,{message:"Value is required" })
-                .max(10000,{message:"Value is too long" }),
-            projectId:z.string().min(1,{message:"Project ID is required"}),
+                .min(1,{message:"Value  is required" })
+                .max(10000,{message:"Value is too long"})
+        
+            // projectId:z.string().min(1,{message:"Project ID is required"}),
 
 
         
@@ -73,25 +74,34 @@ export const messagesRouter=createTRPCRouter({
     )
     .mutation(async ({input})=>{
 
-
-     const createdMessage=   await prisma.message.create({
+        const createdProject=await prisma.project.create({
             data:{
-                projectId:input.projectId,
-                content:input.value,
-                role:"USER",
-                type:"RESULT",
-            },
-        });
+                name:generateSlug(2,{
+                    format:"kebab",
+                }),
+                messages:{
+                    create:{
+                        content:input.value,
+                        role:"USER",
+                        type:"RESULT",
+                    }
+                }
+
+            }
+        })
+
 
 
         await inngest.send({
             name:"code-agent/run",
             data:{
                 value:input.value,
-                projectId:input.projectId,
+                projectId:createdProject.id,
             }
         })
-        return createdMessage;
+
+        return createdProject;
+        
 
 
 

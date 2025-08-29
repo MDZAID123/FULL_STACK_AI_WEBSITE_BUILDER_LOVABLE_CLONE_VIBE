@@ -40,16 +40,16 @@ enum MessageType{
 }
 
 
-// model Project {
-//   id String @id @default(uuid())
-//   name String
-//   userId String
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
+model Project {
+  id String @id @default(uuid())
+  name String
+  // userId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   
 
-//   message Message[]
-// }
+  messages Message[]
+}
 
 model Message {
   id String @id @default(uuid())
@@ -60,8 +60,8 @@ model Message {
   updatedAt DateTime @updatedAt
   
 
-  // projectId String
-  // project Project @relation(fields:[projectId],references:[id],onDelete:Cascade)
+  projectId String
+  project Project @relation(fields:[projectId],references:[id],onDelete:Cascade)
 
   fragment Fragment?
 }
