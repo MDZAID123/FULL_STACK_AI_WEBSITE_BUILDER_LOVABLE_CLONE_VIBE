@@ -30,6 +30,28 @@ import {generateSlug} from "random-word-slugs";
 export const projectsRouter=createTRPCRouter({
 
 
+    
+
+    getOne:baseProcedure
+    .input(z.object({
+        id: z.string().min(1,{message:"Id is required"}),
+    }))
+    .query(async({input,ctx})=>{
+        const existingProject=await prisma.project.findUnique({
+            where :{
+                id:input.id,
+                // userId:ctx.auth.userId,
+            },
+        });
+
+        if(!existingProject){
+            throw new TRPCError({code:"NOT_FOUND",message:"Project not found"});
+
+        }
+        return existingProject;
+    }),
+
+
     //this getmany procedure is used and called from frontend to display conversion history for a project
 
     getMany:baseProcedure

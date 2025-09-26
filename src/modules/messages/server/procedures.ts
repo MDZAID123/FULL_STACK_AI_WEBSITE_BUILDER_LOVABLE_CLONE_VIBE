@@ -31,21 +31,21 @@ export const messagesRouter=createTRPCRouter({
     //this getmany procedure is used and called from frontend to display conversion history for a project
 
     getMany:baseProcedure
-    // .input(
-    //     z.object({
-    //         projectId:z.string().min(1,{message:"Project ID is required"}),
+    .input(
+        z.object({
+            projectId:z.string().min(1,{message:"Project ID is required"}),
 
-    //     }),
+        }),
 
-    // )
-    .query(async({input,ctx})=>{
+    )
+    .query(async({input})=>{
         const messages=await prisma.message.findMany({
-            // where:{
-            //     projectId:input.projectId,
-            //     project:{
-            //         userId:ctx.auth.userId,
-            //     },
-            // },
+            where:{
+                projectId:input.projectId,
+                // project:{
+                //     userId:ctx.auth.userId,
+                // },
+            },
             include:{
                 fragment:true,
             },
