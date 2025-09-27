@@ -3,6 +3,9 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { set } from "date-fns";
 import { useEffect, useRef } from "react";
 import { MessageForm } from "./message-form";
+import { Fragment } from "@/generated/prisma";
+import { MessageCard } from "./message-card";
+import { MessageLoading } from "./message-loading";
 
 
 interface Props{
@@ -27,25 +30,28 @@ export const MessagesContainer=({
     const {data:messages}=useSuspenseQuery(trpc.messages.getMany.queryOptions({
         projectId:projectId,
     },{
-        refetechInterval:2000,
+        refetchInterval:2000,
     }));
 
 
     //use effect to sync active fragment  
     useEffect(()=>{
 
-        const lastAssistantMessage=messages.findlast(
+        const lastAssistantMessage=messages.findLast(
             (message)=>message.role === "ASSISTANT"
         );
 
         if(lastAssistantMessage?.fragment && lastAssistantMessage.id !==lastAssistantMessageIdRef.current){
             setActiveFragment(lastAssistantMessage.fragment);
             lastAssistantMessageIdRef.current=lastAssistantMessage.id;
+        }
 
-        },[messages,setActiveFragment]
+        },[messages,setActiveFragment]);
+
+    
 
 
-    )
+    
 
     //whenever messages changes find the last assistant mesage role=="Assistant"
     //if it has a fragment and its not the same as previously processed one -set it as the active fragment 
