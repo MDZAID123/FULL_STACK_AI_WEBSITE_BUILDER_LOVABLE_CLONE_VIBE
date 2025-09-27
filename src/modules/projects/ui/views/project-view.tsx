@@ -13,11 +13,24 @@ import {
 import { ErrorBoundary } from "react-error-boundary";
 import { Suspense } from "react";
 import { Tabs } from "@radix-ui/react-tabs";
+import { Fragment } from "@/generated/prisma";
+import { ProjectHeader } from "../components/project-header";
+import { MessagesContainer } from "../components/messages-container";
 interface Props{
     projectId:string;
 }
 export const ProjectView=({projectId}:Props)=>{
     const trpc=useTRPC();
+
+    const { has }=useAuth();
+    const hasProAccess=has?.({plan:"pro"});
+
+
+    //setting up the active fragment
+    const [activeFragment,setActiveFragment]=useState<Fragment | null>(null);
+
+    const [tabState,setTabState]=useState<"preview"|"code">("preview");
+    
 
     const {data:project}=useSuspenseQuery(trpc.projects.getOne.queryOptions({
         id:projectId,
