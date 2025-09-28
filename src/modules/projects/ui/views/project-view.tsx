@@ -11,19 +11,22 @@ import {
 
 
 import { ErrorBoundary } from "react-error-boundary";
-import { Suspense } from "react";
-import { Tabs } from "@radix-ui/react-tabs";
+import { Suspense, useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Fragment } from "@/generated/prisma";
 import { ProjectHeader } from "../components/project-header";
 import { MessagesContainer } from "../components/messages-container";
+import { CodeIcon, EyeIcon } from "lucide-react";
+import { FragmentWeb } from "../components/fragment-web";
+import { FileExplorer } from "@/components/file-explorer";
 interface Props{
     projectId:string;
 }
 export const ProjectView=({projectId}:Props)=>{
     const trpc=useTRPC();
 
-    const { has }=useAuth();
-    const hasProAccess=has?.({plan:"pro"});
+    // const { has }=useAuth();
+    // const hasProAccess=has?.({plan:"pro"});
 
 
     //setting up the active fragment
@@ -99,15 +102,15 @@ export const ProjectView=({projectId}:Props)=>{
                     >
 
                         <div className="w-full flex items-center p-2 border-b gap-x-2">
-                            <TabList className="h-8 p-0 border rounded-md">
-                                <TabTrigger value="preview"  className="rounded-md">
+                            <TabsList className="h-8 p-0 border rounded-md">
+                                <TabsTrigger value="preview"  className="rounded-md">
 
                                     <EyeIcon/> <span>Demo</span>
 
 
 
 
-                                </TabTrigger>
+                                </TabsTrigger>
 
 
                                 <TabsTrigger value="code" className="rounded-md">
@@ -115,11 +118,11 @@ export const ProjectView=({projectId}:Props)=>{
 
                                 </TabsTrigger>
 
-                            </TabList>
+                            </TabsList>
 
                             <div className="ml-auto flex items-center gap-x-2">
 
-                                {!hasProAccess && (
+                                {/* {!hasProAccess && (
                                     <Button asChild size="sm" variant="tertiary">
                                         <Link href="pricing">
 
@@ -127,9 +130,9 @@ export const ProjectView=({projectId}:Props)=>{
                                         </Link>
 
                                     </Button>
-                                )}
+                                )} */}
 
-                                <UserControl/>
+                                {/* <UserControl/> */}
 
                             </div>
 
