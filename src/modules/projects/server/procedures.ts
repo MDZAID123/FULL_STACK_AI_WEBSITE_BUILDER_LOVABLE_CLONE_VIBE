@@ -7,7 +7,7 @@
 
 import { inngest } from "@/inngest/client";
 import { prisma } from "@/lib/db";
-import {  createTRPCRouter, baseProcedure } from "@/trpc/init";
+import {  createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
 
@@ -32,7 +32,7 @@ export const projectsRouter=createTRPCRouter({
 
     
 
-    getOne:baseProcedure
+    getOne:protectedProcedure
     .input(z.object({
         id: z.string().min(1,{message:"Id is required"}),
     }))
@@ -40,7 +40,7 @@ export const projectsRouter=createTRPCRouter({
         const existingProject=await prisma.project.findUnique({
             where :{
                 id:input.id,
-                // userId:ctx.auth.userId,
+                userId:ctx.auth.userId,
             },
         });
 
@@ -54,7 +54,7 @@ export const projectsRouter=createTRPCRouter({
 
     //this getmany procedure is used and called from frontend to display conversion history for a project
 
-    getMany:baseProcedure
+    getMany:protectedProcedure
     // .input(
     //     z.object({
     //         projectId:z.string().min(1,{message:"Project ID is required"}),
@@ -64,12 +64,12 @@ export const projectsRouter=createTRPCRouter({
     // )
     .query(async({input,ctx})=>{
         const projects=await prisma.project.findMany({
-            // where:{
-            //     projectId:input.projectId,
-            //     project:{
-            //         userId:ctx.auth.userId,
-            //     },
-            // },
+            where:{
+                // projectId:input.projectId,
+                // project:{
+                    userId:ctx.auth.userId,
+                // },
+            },
             
             orderBy:{
                 updatedAt:"asc",
@@ -81,7 +81,7 @@ export const projectsRouter=createTRPCRouter({
     //Used and called from frontend  when a user sends a new message/query
 
 
-    create:baseProcedure
+    create:protectedProcedure
     .input(
         z.object({
             value:z.string()
@@ -94,10 +94,11 @@ export const projectsRouter=createTRPCRouter({
         
         }),
     )
-    .mutation(async ({input})=>{
+    .mutation(async ({input,ctx})=>{
 
         const createdProject=await prisma.project.create({
             data:{
+                userId:ctx.auth.userId,
                 name:generateSlug(2,{
                     format:"kebab",
                 }),
