@@ -1,0 +1,27 @@
+"use client";
+//so Basically UserControl is our user profile dropdown for authentication
+import {dark } from "@clerk/themes";
+
+import {UserButton} from "@clerk/nextjs";
+interface Props{
+    showName?:boolean;
+}
+
+
+export const UserControl=({showName}:Props)=>{
+
+    const currentTheme=useCurrentTheme();
+
+    return (
+        <UserButton
+        showName={showName}
+        appearance={{
+            element:{
+                userButtonBox:"rounded-md!",
+                userButtonAvatarBox:"rounded-md! size-8!",
+                userButtonTrigger:"rounded-md!"
+            },
+            baseTheme: currentTheme === "dark"? dark:undefined,
+        }}/>
+    )
+}

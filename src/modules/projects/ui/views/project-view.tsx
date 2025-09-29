@@ -19,6 +19,7 @@ import { MessagesContainer } from "../components/messages-container";
 import { CodeIcon, EyeIcon } from "lucide-react";
 import { FragmentWeb } from "../components/fragment-web";
 import { FileExplorer } from "@/components/file-explorer";
+import { UserControl } from "@/components/user-control";
 interface Props{
     projectId:string;
 }
@@ -132,7 +133,7 @@ export const ProjectView=({projectId}:Props)=>{
                                     </Button>
                                 )} */}
 
-                                {/* <UserControl/> */}
+                                <UserControl/>
 
                             </div>
 

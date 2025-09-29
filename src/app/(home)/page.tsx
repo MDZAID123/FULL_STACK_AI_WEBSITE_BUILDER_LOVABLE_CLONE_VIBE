@@ -1,5 +1,6 @@
 "use client"
 import { ProjectForm } from "@/modules/homes/ui/component/project-form";
+import { ProjectList } from "@/modules/homes/ui/component/projects-list";
 // // "use client"
 // import React, { Suspense, use } from 'react'
 // import { useTRPC } from '@/trpc/client'
@@ -126,4 +127,7 @@ const Page =()=>{
     </div>
   )
 }
+
+
+export default page;
 

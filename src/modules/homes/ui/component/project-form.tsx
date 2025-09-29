@@ -12,6 +12,9 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
 import TextareaAutosize from "react-textarea-autosize";
+import { useClerk } from "@clerk/nextjs";
+import { cn } from "@/lib/utils";
+import { PROJECT_TEMPLATES } from "../../constants";
 
 
 const formSchema=z.object({
@@ -108,7 +111,7 @@ export const ProjectForm=()=>{
                         <TextareaAutosize
                         {...field}
                         disabled={isPending}
-                        onFocus={()=setIsFocused(true)}
+                        onFocus={()=>setIsFocused(true)}
                         onBlur={()=>setIsFocused(false)}
                         minRows={2}
                         maxRows={8}

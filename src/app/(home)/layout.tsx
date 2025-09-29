@@ -1,3 +1,4 @@
+import { Navbar } from "@/modules/homes/ui/component/navbar";
 
 interface Props{
     children:React.ReactNode;
