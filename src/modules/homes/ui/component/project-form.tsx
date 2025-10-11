@@ -46,9 +46,9 @@ export const ProjectForm=()=>{
                 trpc.projects.getMany.queryOptions(),
             );
 
-            // queryClient.invalidateQueries(
-            //     trpc.usage.status.queryOptions(),
-            // );
+            queryClient.invalidateQueries(
+                trpc.usage.status.queryOptions(),
+            );
 
             router.push(`/projects/${data.id}`);
 

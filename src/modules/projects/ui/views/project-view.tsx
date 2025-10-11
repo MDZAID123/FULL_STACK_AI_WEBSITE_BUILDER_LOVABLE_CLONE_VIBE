@@ -20,14 +20,15 @@ import { CodeIcon, EyeIcon } from "lucide-react";
 import { FragmentWeb } from "../components/fragment-web";
 import { FileExplorer } from "@/components/file-explorer";
 import { UserControl } from "@/components/user-control";
+import { useAuth } from "@clerk/nextjs";
 interface Props{
     projectId:string;
 }
 export const ProjectView=({projectId}:Props)=>{
     const trpc=useTRPC();
 
-    // const { has }=useAuth();
-    // const hasProAccess=has?.({plan:"pro"});
+    const { has }=useAuth();
+    const hasProAccess=has?.({plan:"pro"});
 
 
     //setting up the active fragment
