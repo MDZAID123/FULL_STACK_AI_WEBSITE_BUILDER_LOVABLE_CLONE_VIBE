@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
+import { useScroll } from "@/hooks/use-scroll";
+import { UserControl } from "@/components/user-control";
 
 //This is the top navbar of the page 
 

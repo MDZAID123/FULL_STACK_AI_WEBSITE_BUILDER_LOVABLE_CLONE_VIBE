@@ -7,6 +7,7 @@
 
 import { inngest } from "@/inngest/client";
 import { prisma } from "@/lib/db";
+import { consumeCredits } from "@/lib/usage";
 import {  createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
@@ -87,6 +88,21 @@ export const messagesRouter=createTRPCRouter({
     //why we have added above code snippet cause 
     //currently we dont have any idea into which currrently project this message should go 
     
+    //logically when we will create a message and send it to llm backend we need to consume credits 
+    try{
+        await consumeCredits();
+    }catch(error){
+        if(error instanceof Error){
+            throw new TRPCError({code:"BAD_REQUEST",message:"Something went wrong"});
+        }else{
+            throw new TRPCError({
+                code:"TOO_MANY_REQUESTS",
+                message:"You have run out of credits"
+            })
+        }
+    }
+    //the above function will return some error object maybe empty sometimes but we need to capture that 
+    //cause that will say you have no credits left 
 
 
      const createdMessage=   await prisma.message.create({
