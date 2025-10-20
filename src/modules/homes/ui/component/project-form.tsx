@@ -135,7 +135,7 @@ export const ProjectForm=()=>{
                                 </span>
                                 Enter
                             </kbd>
-                            %nbsp;to submit
+                            &nbsp; to submit
 
                             
 

@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useScroll } from "@/hooks/use-scroll";
 import { UserControl } from "@/components/user-control";
+import { cn } from "@/lib/utils";
 
 //This is the top navbar of the page 
 

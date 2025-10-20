@@ -18,7 +18,7 @@ export const TreeView =({
     data,
     value,
     onSelect,
-}:TreeViewProps){
+}:TreeViewProps)=>{
 
     return (
         <SidebarProvider>
@@ -103,14 +103,15 @@ const Tree=({item,selectedValue,onSelect,parentPath}:TreeProps)=>{
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                 <SidebarMenuSub>
-                    {items.map(subItem,index)=>(
+                    {items.map((subItem,index)=>(
                         <Tree
                         key={index}
                         item={subItem}
                         selectedValue={selectedValue}
                         onSelect={onSelect}
                         parentPath={currentPath}/>
-                    )}
+                   ) )}
+                
 
                 </SidebarMenuSub>
                 </CollapsibleContent>

@@ -16,11 +16,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Fragment } from "@/generated/prisma";
 import { ProjectHeader } from "../components/project-header";
 import { MessagesContainer } from "../components/messages-container";
-import { CodeIcon, EyeIcon } from "lucide-react";
+import { CodeIcon, CrownIcon, EyeIcon } from "lucide-react";
 import { FragmentWeb } from "../components/fragment-web";
 import { FileExplorer } from "@/components/file-explorer";
 import { UserControl } from "@/components/user-control";
 import { useAuth } from "@clerk/nextjs";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 interface Props{
     projectId:string;
 }
@@ -91,7 +93,7 @@ export const ProjectView=({projectId}:Props)=>{
                 {/* The Above is a drag bar btw 2 resizable panels */}
 
                 <ResizablePanel
-                default={65}
+                defaultSize={65}
                 minSize={50}
                 >
 
@@ -124,15 +126,15 @@ export const ProjectView=({projectId}:Props)=>{
 
                             <div className="ml-auto flex items-center gap-x-2">
 
-                                {/* {!hasProAccess && (
-                                    <Button asChild size="sm" variant="tertiary">
+                                {!hasProAccess && (
+                                    <Button asChild size="sm" variant="ghost">
                                         <Link href="pricing">
 
                                         <CrownIcon/>Upgrade
                                         </Link>
 
                                     </Button>
-                                )} */}
+                                )}
 
                                 <UserControl/>
 
