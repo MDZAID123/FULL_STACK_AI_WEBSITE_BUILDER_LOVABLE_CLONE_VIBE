@@ -1,5 +1,5 @@
 
-import { ChevronLeftIcon, SunMoonIcon } from "lucide-react";
+
 import { Chevron } from "react-day-picker";
 import {
   DropdownMenu,
@@ -18,7 +18,14 @@ import { useTheme } from "next-themes";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
 import { Button } from "@/components/ui/button";
+import {
+  ChevronDownIcon,
+  ChevronLeftIcon,
+  SunMoonIcon,
+} from "lucide-react";
 
+import Image from "next/image";
+import Link from "next/link";
 interface Props{
     projectId:string;
 }
@@ -38,16 +45,19 @@ export const ProjectHeader=({projectId}:Props)=>{
     //from next themes let us switch between light and dark 
     //system in the dropdown
 
+    console.log("console log for debugging purpose from project header.tsx component");
+    console.log({project});
+
 
 
     return (
         <header className="p-2 flex justify-between items-center border-b">
             <DropdownMenu>
-                <DropdownMenuTrigger aschild>
+                <DropdownMenuTrigger asChild>
                     <Button
                     variant="ghost"
                     size="sm"
-                    classname="focus-visible:ring-0 hover:bg-transparent hover:opacity-75 transition-opacity  plz-2!">
+                    className="focus-visible:ring-0 hover:bg-transparent hover:opacity-75 transition-opacity  plz-2">
                         <Image
                         src="/logo.svg" alt="Vibe" width={18} height={18}/>
                         <span className="text-sm font-medium">{project.name}</span>
@@ -58,7 +68,7 @@ export const ProjectHeader=({projectId}:Props)=>{
 
                 </DropdownMenuTrigger>
                 <DropdownMenuContent side="bottom" align="start">
-                    <DropdownMenuItem aschild>
+                    <DropdownMenuItem asChild>
                         <Link href="/">
                         <ChevronLeftIcon/>
                         <span>

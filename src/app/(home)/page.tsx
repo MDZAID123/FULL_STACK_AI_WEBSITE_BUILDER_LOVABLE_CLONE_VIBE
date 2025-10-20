@@ -1,4 +1,4 @@
-"use client"
+
 import { ProjectForm } from "@/modules/homes/ui/component/project-form";
 import { ProjectList } from "@/modules/homes/ui/component/projects-list";
 // // "use client"
@@ -129,5 +129,5 @@ const Page =()=>{
 }
 
 
-export default page;
+export default Page;
 

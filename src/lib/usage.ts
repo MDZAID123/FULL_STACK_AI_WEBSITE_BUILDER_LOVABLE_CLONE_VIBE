@@ -7,11 +7,11 @@ import {auth} from "@clerk/nextjs/server"; //this will fetch user info
 
 import {RateLimiterPrisma } from "rate-limiter-flexible";//this rate limiter that stores usage in our prisma databases 
 
-import {prisma } from "@lib/db";//used by ratelimiterPrisma to persist usage counts
+// import {prisma } from "@lib/db";//used by ratelimiterPrisma to persist usage counts
+import { prisma } from "@/lib/db";
 
 
-
-const FREE_POINTS=2; //FREE USERS GET 2 CREDITS PER MONTH
+const FREE_POINTS=10; //FREE USERS GET 2 CREDITS PER MONTH
 
 const PRO_POINTS=100;  //PRO USERS GET 100 CREDITS PER MONTH
 
@@ -22,7 +22,7 @@ const GENERATION_COST=1; //EACH ACTION EG AI GENERATION API CALL CONSUME 1 CREDI
 
 
 
-export aysnc  function getUsageTracker(){
+export async  function getUsageTracker(){
 
 
     const { has }=await auth();
