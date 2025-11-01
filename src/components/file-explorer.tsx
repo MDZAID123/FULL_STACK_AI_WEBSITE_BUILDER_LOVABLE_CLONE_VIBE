@@ -140,7 +140,7 @@ export const FileExplorer=({
 
     const handleCopy=useCallback(()=>{
         if(selectedFile){
-            navigator.clipboard.writeText(file[selectedFile]);
+            navigator.clipboard.writeText(files[selectedFile]);
             setCopied(true);
             setTimeout(()=>{
                 setCopied(false);
