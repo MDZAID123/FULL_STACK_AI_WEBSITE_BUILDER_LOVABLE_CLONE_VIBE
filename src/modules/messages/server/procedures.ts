@@ -40,6 +40,9 @@ export const messagesRouter=createTRPCRouter({
 
     )
     .query(async({input,ctx})=>{
+
+        // throw new TRPCError({code:"BAD_REQUEST"}) //throwing this error just for testing purposes
+
         const messages=await prisma.message.findMany({
             where:{
                 projectId:input.projectId,
