@@ -7,6 +7,7 @@ import { getSandbox, lastAssistantTextMessageContent } from "./utils";
 import {z,ZodType}from "zod";
 import { PROMPT,FRAGMENT_TITLE_PROMPT, RESPONSE_PROMPT } from "@/prompt";
 import { prisma } from "@/lib/db";
+import { SANDBOX_TIMEOUT } from "./type";
 
 
 
@@ -22,12 +23,16 @@ export const codeAgentFunction = inngest.createFunction(
 
     const sandboxId=await step.run("get-sandbox-id",async()=>{
         const sandbox=await Sandbox.create("vibe-nextjs-test-2");
+        await sandbox.setTimeout(SANDBOX_TIMEOUT);//this will now be alive for an hour for hobby users 
+        //for more timeout then this we would be requiring 
+        //the more longer you put timeout the more you will spend credits 
+
         return sandbox.sandboxId;
     })
 
     //
 
-    const previousMessage=await step.run("get-previous-message",async()=>{
+    const previousMessages=await step.run("get-previous-messages",async()=>{
         const formattedMessages:Message[]=[];
 
         const messages=await prisma.message.findMany({
@@ -36,7 +41,8 @@ export const codeAgentFunction = inngest.createFunction(
             },
             orderBy:{
                 createdAt:"desc",  //TODO CHANGE TO ASC IF AI DOES NOT UNDERSTAND THE LATEST MESSAGE 
-            }
+            },
+            take:5,
         });
         //now let push each of the message we fetch from prisma db to th formatted message 
         
@@ -47,7 +53,7 @@ export const codeAgentFunction = inngest.createFunction(
                 content:message.content,
             })
         }
-        return formattedMessages;
+        return formattedMessages.reverse();
         //now due to this the agent will have the context of the entire conversation
 
 
@@ -57,8 +63,11 @@ export const codeAgentFunction = inngest.createFunction(
         summary:"",
         files:{},
     },{
-        messages:previousMessage
+        messages:previousMessages
     },);
+
+    console.log("previous messages of the current chat ")
+    console.log(previousMessages)
     //now we will add this agent state created above to several places
 
 
